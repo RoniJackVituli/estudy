@@ -1,0 +1,576 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/forum.css' %} ">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+{% endblock links %}
+
+
+{% block style %}
+<style>
+
+.content-item {
+    padding:30px 0;
+	background-color:#FFFFFF;
+}
+
+.content-item.grey {
+	background-color:#F0F0F0;
+	padding:50px 0;
+	height:100%;
+}
+
+.content-item h2 {
+	font-weight:700;
+	font-size:35px;
+	line-height:45px;
+	text-transform:uppercase;
+	margin:20px 0;
+}
+
+.content-item h3 {
+	font-weight:400;
+	font-size:20px;
+	color:#555555;
+	margin:10px 0 15px;
+	padding:0;
+}
+
+.content-headline {
+	height:1px;
+	text-align:center;
+	margin:20px 0 70px;
+}
+
+.content-headline h2 {
+	background-color:#FFFFFF;
+	display:inline-block;
+	margin:-20px auto 0;
+	padding:0 20px;
+}
+
+.grey .content-headline h2 {
+	background-color:#F0F0F0;
+}
+
+.content-headline h3 {
+	font-size:14px;
+	color:#AAAAAA;
+	display:block;
+}
+
+
+#comments {
+    box-shadow: 0 -1px 6px 1px rgba(0,0,0,0.1);
+	background-color:#FFFFFF;
+}
+
+#comments form {
+	margin-bottom:30px;
+}
+
+#comments .btn {
+	margin-top:7px;
+}
+
+#comments form fieldset {
+	clear:both;
+}
+
+#comments form textarea {
+	height:100px;
+}
+
+#comments .media {
+	border-top:1px dashed #DDDDDD;
+	padding:20px 0;
+	margin:0;
+}
+
+#comments .media > .pull-left {
+    margin-right:20px;
+}
+
+#comments .media img {
+	max-width:100px;
+}
+
+#comments .media h4 {
+	margin:0 0 10px;
+}
+
+#comments .media h4 span {
+	font-size:14px;
+	float:right;
+	color:#999999;
+}
+
+#comments .media p {
+	margin-bottom:15px;
+	text-align:justify;
+}
+
+#comments .media-detail {
+	margin:0;
+}
+
+#comments .media-detail li {
+	color:#AAAAAA;
+	font-size:12px;
+	padding-right: 10px;
+	font-weight:600;
+}
+
+#comments .media-detail a:hover {
+	text-decoration:underline;
+}
+
+#comments .media-detail li:last-child {
+	padding-right:0;
+}
+
+#comments .media-detail li i {
+	color:#666666;
+	font-size:15px;
+	margin-right:10px;
+}
+
+  .date {
+    font-size: 11px
+}
+
+.comment-text {
+    font-size: 12px
+}
+
+.fs-12 {
+    font-size: 12px
+}
+
+.shadow-none {
+    box-shadow: none
+}
+
+.name {
+    color: #007bff
+}
+
+.cursor:hover {
+    color: blue
+}
+
+.cursor {
+    cursor: pointer
+}
+
+.textarea {
+    resize: none
+}
+
+
+/* Import Google Font - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+::selection{
+  color: #fff;
+  background: #1a81ff;
+}
+.boxPost{
+  margin: auto;
+  margin-top: 20px;
+  width: 500px;
+  height: 352px;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 10px;
+  transition: height 0.2s ease;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+.boxPost.active{
+  height: 590px;
+}
+.boxPost .wrapper{
+  width: 1000px;
+  display: flex;
+}
+.boxPost .wrapper section{
+  width: 500px;
+  background: #fff;
+}
+.boxPost img{
+  cursor: pointer;
+}
+.boxPost .post{
+  transition: margin-left 0.18s ease;
+}
+.boxPost.active .post{
+  margin-left: -500px;
+}
+.post header{
+  font-size: 22px;
+  font-weight: 600;
+  padding: 17px 0;
+  text-align: center;
+  border-bottom: 1px solid #bfbfbf;
+}
+.post form{
+  margin: 20px 25px;
+}
+.post form .content,
+.audience .list li .column{
+  display: flex;
+  align-items: center;
+}
+.post form .content img{
+  cursor: default;
+  max-width: 52px;
+}
+.post form .content .details{
+  margin: -3px 0 0 12px;
+}
+form .content .details p{
+  font-size: 17px;
+  font-weight: 500;
+}
+.content .details .privacy{
+  display: flex;
+  height: 25px;
+  cursor: pointer;
+  padding: 0 10px;
+  font-size: 11px;
+  margin-top: 3px;
+  border-radius: 5px;
+  align-items: center;
+  max-width: 98px;
+  background: #E4E6EB;
+  justify-content: space-between;
+}
+.details .privacy span{
+  font-size: 13px;
+  margin-top: 1px;
+  font-weight: 500;
+}
+.details .privacy i:last-child{
+  font-size: 13px;
+  margin-left: 1px;
+}
+form :where(textarea, button){
+  width: 100%;
+  outline: none;
+  border: none;
+}
+form textarea{
+  resize: none;
+  font-size: 18px;
+  margin-top: 30px;
+  min-height: 100px;
+}
+form textarea::placeholder{
+  color: #858585;
+}
+form textarea:focus::placeholder{
+  color: #b3b3b3;
+}
+form :where(.theme-emoji, .options){
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.theme-emoji img:last-child{
+  max-width: 24px;
+}
+form .options{
+  height: 57px;
+  margin: 15px 0;
+  padding: 0 15px;
+  border-radius: 7px;
+  border: 1px solid #B9B9B9;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+form .options :where(.list, li),
+.audience :where(.arrow-back, .icon, li .radio){
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+form .options p{
+  color: #595959;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: default;
+}
+form .options .list{
+  list-style: none;
+}
+.options .list li{
+  height: 42px;
+  width: 42px;
+  margin: 0 -1px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+.options .list li:hover{
+  background: #f0f1f4;
+}
+.options .list li img{
+  width: 23px;
+}
+form button{
+  height: 53px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #BCC0C4;
+  cursor: no-drop;
+  border-radius: 37;
+  background: #e2e5e9;
+  transition: all 0.3s ease;
+}
+form textarea:valid ~ button{
+  color: #fff;
+  cursor: pointer;
+  background: #4599FF;
+}
+form textarea:valid ~ button:hover{
+  background: #1a81ff;
+}
+.boxPost .audience{
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.boxPost.active .audience{
+  opacity: 1;
+}
+.audience header{
+  padding: 17px 0;
+  text-align: center;
+  position: relative;
+  border-bottom: 1px solid #bfbfbf;
+}
+.audience header .arrow-back{
+  position: absolute;
+  left: 25px;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  font-size: 15px;
+  color: #747474;
+  border-radius: 50%;
+  background: #E4E6EB;
+}
+.audience header p{
+  font-size: 22px;
+  font-weight: 600;
+}
+.audience .content{
+  margin: 20px 25px 0;
+}
+.audience .content p{
+  font-size: 17px;
+  font-weight: 500;
+}
+.audience .content span{
+  font-size: 14px;
+  color: #65676B;
+}
+.audience .list{
+  margin: 15px 16px 20px;
+  list-style: none;
+}
+.audience .list li{
+  display: flex;
+  cursor: pointer;
+  margin-bottom: 5px;
+  padding: 12px 10px;
+  border-radius: 7px;
+  align-items: center;
+  justify-content: space-between;
+}
+.list li.active,
+.audience .list li.active:hover{
+  background: #E5F1FF;
+}
+.audience .list li:hover{
+  background: #f0f1f4;
+}
+.audience .list li .column .icon{
+  height: 50px;
+  width: 50px;
+  color: #333;
+  font-size: 23px;
+  border-radius: 50%;
+  background: #E4E6EB;
+}
+.audience .list li.active .column .icon{
+  background: #cce4ff;
+}
+.audience .list li .column .details{
+  margin-left: 15px;
+}
+.list li .column .details p{
+  font-weight: 500;
+}
+.list li .column .details span{
+  font-size: 14px;
+  color: #65676B;
+}
+.list li .radio{
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  position: relative;
+  border: 1px solid #707070;
+}
+.list li.active .radio{
+  border: 2px solid #4599FF;
+}
+.list li .radio::before{
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: inherit;
+}
+.list li.active .radio::before{
+  background: #4599FF;
+}
+
+p{
+  text-align: right;
+}
+.header-blue{
+  background: linear-gradient(135deg, #129bd4, #95e6ff);
+}
+</style>
+
+{% endblock style %}
+
+{% block content %}
+<div class="header-blue">
+  <hr>
+  <div class="boxPost">
+    <div class="wrapper">
+      <section class="post">
+        <header>Create Post</header>
+        <form action="{% url 'Forum:post-post' user.id %}" method="post">
+          {% csrf_token %}
+          <div class="content">
+            <img src="{% static 'images/ES.png' %}" alt="logo">
+            <div class="details">
+              <p>Estudy</p>
+            </div>
+          </div>
+          {{form_post.message}}
+          <button>Post</button>
+        </form>
+      </section>  
+    </div>
+  </div>
+  <hr>
+</div>
+  
+  {% comment %} Publish the post! {% endcomment %}
+  <div class="row" style="margin-left: 150px;">
+    {% for post in all_posts %}
+    <div class="col-md-4" style="
+      flex: 0 0 auto;
+      width: auto;">
+      <div class="container mt-5">
+        <div class="d-flex justify-content-center row">
+          <div class="col-md-8">
+            <div class="d-flex flex-column comment-section">
+              <div class="bg-white p-2">
+                <div class="d-flex flex-row user-info"><img class="rounded-circle" src="{{post.user.imag_profile.url}}" style="width: 30px;
+                  height: 30px;
+                  border-radius: 50%;
+                  object-fit: cover">
+                  <div class="d-flex flex-column justify-content-start ml-2">
+                    <span class="d-block font-weight-bold name">{{post.user.first_name}} {{post.user.last_name}}</span>
+                    <span class="date text-black-50">Shared publicly - {{post.date}}</span>
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <p class="comment-text">{{post.message|linebreaks}}</p>
+                </div>
+              </div>
+              <div class="bg-white">
+                <div class="d-flex flex-row fs-12">
+                  <div class="like p-2 cursor">
+                    <i class="fa fa-thumbs-o-up"></i><span class="ml-1">Like</span></div>
+                  <div class="like p-2 cursor">
+                    <i class="fa fa-commenting-o"></i>
+                    <span class="ml-1">Comment</span>
+                  </div>
+                  <div class="like p-2 cursor">
+                    {% if post.user == user or user.is_superuser %}
+                    <a href="{% url 'Forum:delete-po' post.id %}" class="ml-1" style="text-decoration: none;color: inherit;" >
+                      <i class="fa fa-commenting-o"></i>
+                      <span class="ml-1">Delete</span>
+                    </a>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div class="bg-light p-2">
+              <form action="{% url 'Forum:comment-post' user.id post.id %}" method="post">
+                  {% csrf_token %}
+                  <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="{{request.user.imag_profile.url}}" style="width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    object-fit: cover">
+                    {{form_comment.message}}
+                  </div>
+                  <div class="mt-2 text-right">
+                    <button class="btn btn-primary btn-sm shadow-none" style="width: auto;" type="submit">Post comment</button>
+                  </div>
+                </form>
+              </div>
+              {% for comment in post.comment_set.all %}   
+              <div class="bg-light p-2">
+                {% comment %} COMMENTS PER POST {% endcomment %}
+                <div class="mt-2">
+                  <div class="bg-white p-2">
+                    <div class="d-flex flex-row user-info"><img class="rounded-circle" src="{{comment.user.imag_profile.url}}" style="width: 30px;
+                      height: 30px;
+                      border-radius: 50%;
+                      object-fit: cover;">
+                      <div class="d-flex flex-column justify-content-start ml-2">
+                        <span class="d-block font-weight-bold name">{{comment.user.first_name}} {{comment.user.last_name}}</span>
+                        <span class="date text-black-50">Shared publicly - {{comment.date}}</span>
+                      </div>
+                    </div>
+                  </div>  
+                  <p class="comment-text">{{comment.message|linebreaks}}</p>
+                </div>
+                <div class="d-flex flex-row fs-12">
+                  <div class="like p-2 cursor"><i class="fa fa-thumbs-o-up"></i><span class="ml-1">Like</span></div>
+                  <div class="like p-2 cursor">
+                    {% if comment.user == user or user.is_superuser %}
+                    <a href="{% url 'Forum:delete-co' comment.id %}" class="ml-1" style="text-decoration: none;color: inherit;" >
+                      <i class="fa fa-commenting-o"></i>
+                      <span class="ml-1">Delete</span>
+                    </a>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+              {% comment %}  {% endcomment %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    {% endfor %}
+  </div>
+  
+  
+  {% endblock content %}

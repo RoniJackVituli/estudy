@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load ratings %}
+{% block links %}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+  <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
+  <script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
+{% endblock  %}
+
+{% block style %}
+  <style>
+    h1{
+      text-align: center;
+    }
+    h3{
+      text-align: center;
+    }
+    .filters{
+      text-align: center;
+    }
+
+    
+  </style>
+{% endblock style %}
+
+
+{% block content %}
+<h1>{{course}} סרטונים</h1>
+<hr>
+<div class="container">
+  <div class="row">
+    {% for video in videos %}
+    <div class="col-md-6 ">
+      <div class="card">
+        <div class="card-image">
+          <div class="embed-responsive embed-responsive-16by9">
+            <iframe width="280" height="157" src="https://www.youtube.com/embed/{{video.IdVideo}}" frameborder="0" allowfullscreen></iframe>
+            <div class="content">
+            </div><!--end div class content-->
+          </div><!--End Div embed-responsive-->
+        </div>
+        <!-- card image -->
+        <div class="card-content">
+          <p style="text-align: center;"><h3>{{video.title}}</h3></p>
+          <div class="col text-center">  
+              {%ratings video%}
+             {% if user.id == video.user.id or user.is_superuser%}
+             <br>
+              <a style="color:red" href="{% url 'Category:delete-video' course.id video.id %}">Delete Video</a>
+             {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>    
+    {% endfor %}  
+  </div><!--end row-->
+
+</div><!--end container-->
+<hr>
+<div class="filters">
+  <div class="select">
+    <form action="" method="PUT">
+      {% csrf_token %}
+      <select id="standard-select" name='selecting'>
+        <option value="1">לפי דירוג</option>
+        <option value="2">לפי שם</option>
+      </select>
+      <span class="focus"></span>
+    </div>
+    <button type="submit" class="btn btn-info">מיון</button>
+  </form>
+</div>
+
+{% endblock  %}
+<script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>

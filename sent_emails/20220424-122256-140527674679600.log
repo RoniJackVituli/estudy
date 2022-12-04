@@ -1,0 +1,25 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Password reset on 127.0.0.1:8000
+From: webmaster@localhost
+To: Boaz@gmail.com
+Date: Sun, 24 Apr 2022 12:22:56 -0000
+Message-ID: <165080297617.45861.1995052083505910889@1.0.0.127.in-addr.arpa>
+
+
+You're receiving this email because you requested a password reset for your user account at 127.0.0.1:8000.
+
+Please go to the following page and choose a new password:
+
+http://127.0.0.1:8000/acoounts/reset/MjQ/b4dx28-1fc49e092d6de262883e7ef991b3a828/
+
+Your username, in case you’ve forgotten: Boaz
+
+Thanks for using our site!
+
+The 127.0.0.1:8000 team
+
+
+
+-------------------------------------------------------------------------------

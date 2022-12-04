@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+
+{% block links %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+{% endblock  %}
+
+{% block style %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+  * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+  }
+
+  body {
+      font-family: 'Poppins', sans-serif;
+      background-color: aliceblue
+  }
+
+  .wrapper {
+      padding: 30px 50px;
+      border: 1px solid #ddd;
+      border-radius: 15px;
+      margin: 10px auto;
+      max-width: 600px
+  }
+
+  h4 {
+      letter-spacing: -1px;
+      font-weight: 400
+  }
+
+  .img {
+      width: 70px;
+      height: 70px;
+      border-radius: 6px;
+      object-fit: cover
+  }
+
+  #img-section p,
+  #deactivate p {
+      font-size: 12px;
+      color: #777;
+      margin-bottom: 10px;
+      text-align: justify
+  }
+
+  #img-section b,
+  #img-section button,
+  #deactivate b {
+      font-size: 14px
+  }
+
+  label {
+      margin-bottom: 0;
+      font-size: 14px;
+      font-weight: 500;
+      color: #777;
+      padding-left: 3px
+  }
+
+  .form-control {
+      border-radius: 10px
+  }
+
+  input[placeholder] {
+      font-weight: 500
+  }
+
+  .form-control:focus {
+      box-shadow: none;
+      border: 1.5px solid #0779e4
+  }
+
+  select {
+      display: block;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      height: 40px;
+      padding: 5px 10px
+  }
+
+  select:focus {
+      outline: none
+  }
+
+  .button {
+      background-color: #fff;
+      color: #0779e4
+  }
+
+  .button:hover {
+      background-color: #0779e4;
+      color: #fff
+  }
+
+  .btn-primary {
+      background-color: #0779e4
+  }
+
+  .danger {
+      background-color: #fff;
+      color: #e20404;
+      border: 1px solid #ddd
+  }
+
+  .danger:hover {
+      background-color: #e20404;
+      color: #fff
+  }
+  .col-md-6{
+    text-align: right;
+  }
+
+  @media(max-width:576px) {
+      .wrapper {
+          padding: 25px 20px
+      }
+
+      #deactivate {
+          line-height: 18px
+      }
+  }
+
+  .changePass{
+    position: relative;
+    left: 100px;
+  }
+</style>
+{% endblock style %}
+
+
+{% block content %}
+<form method = "post" enctype="multipart/form-data">
+    <div class="wrapper bg-white mt-sm-5">
+        <h4 class="pb-4 border-bottom">Account settings</h4>
+        <div class="d-flex align-items-start py-3 border-bottom"> 
+            {% csrf_token %}
+            <img src="https://images.pexels.com/photos/1037995/pexels-photo-1037995.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="img" alt="">
+            <div class="pl-sm-4 pl-2" id="img-section"> 
+                <label for="photo"><b>Profile Photo</b></label>
+                <p>Accepted file type .png. Less than 1MB</p> 
+                {{form_user.imag_profile}}
+            </div>
+        </div>
+        <div class="py-2">
+            <div class="row py-2">
+                <div class="col-md-6"> 
+                    <label for="first_name">שם פרטי</label> 
+                    {{form.first_name}} 
+                </div>
+                <div class="col-md-6 pt-md-0 pt-3"> 
+                    <label for="last_name">שם משפחה</label>
+                    {{form.last_name}}
+                </div>
+            </div>
+            <div class="row py-2">
+                <div class="col-md-6"> 
+                    <label for="email">מייל המכללה</label> 
+                    {{form_user.email}}
+                    {% if form_user.email.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_user.email.errors}}
+                    </div>
+                    {% endif %}    
+                </div>
+                <div class="col-md-6 pt-md-0 pt-3"> 
+                    <label for="Phone">מספר פלאפון</label>  
+                    {{form.Phone}}
+                    {% if form.Phone.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{form.Phone.errors}}
+                    </div>
+                    {% endif %}    
+                </div>
+            </div>
+            <div class="row py-2">
+                <div class="col-md-6"> 
+                    <label for="ID">תעודת זהות</label> 
+                    {{form.ID}}
+                   {% if form.ID.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{form.ID.errors}}
+                      </div>
+                    {% endif %} 
+                </div> 
+                {% if request.user.is_student %}
+                    <div class="col-md-6 pt-md-0 pt-3"> 
+                        <label for="department">מחלקה</label>  
+                        {{form.department}}
+                    </div>
+                {% endif %}
+            </div> 
+            {% if request.user.is_student %}
+                <div class="row py-2">
+                    <div class="col-md-6"> 
+                        <label for="semester">סמסטר</label> 
+                        {{form.semester}}
+                    </div>
+                    <div class="col-md-6 pt-md-0 pt-3"> 
+                        <label for="year">שנת לימודים</label>  
+                        {{form.year}}
+                    </div>
+                </div>
+            {% endif %}
+    </form>
+
+            <div class="py-3 pb-4 border-bottom"> 
+                <button class="btn btn-primary mr-3">Save Changes</button> 
+                <a href="{% url 'HomePage:home'%}" class="btn border button">Cancel</a>
+                <a href="{% url 'Details:ch-pass' request.user.id %}" class="changePass">שינוי סיסמא</a>
+
+            </div>
+            <div class="d-sm-flex align-items-center pt-3" id="deactivate">
+                <div> 
+                    <b>Deactivate your account</b>
+                    <p>Details about your company account and password</p>
+                </div>
+                <div class="ml-auto"> 
+                   <a href="{% url 'Details:delete-user' request.user.id %}" class="btn danger">Delete User</a>
+                </div>
+            </div>
+        </div>
+        </div>
+{% endblock %}

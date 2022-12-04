@@ -1,0 +1,18 @@
+{% extends 'HomeWorks.html' %}
+
+
+
+{% block content %}
+
+<h1>{{course.name_course}}</h1>
+
+<form action="{% url 'YouTube:yotube-video' course_id user_id video_index%}" method="post">
+  {% csrf_token %}
+  {{form.as_p}}
+  <button style="color:red" >Save HERE THE VIDEO</a>
+</form>
+
+{% endblock content %}
+
+
+

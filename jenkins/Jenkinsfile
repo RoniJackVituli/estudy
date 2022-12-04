@@ -1,0 +1,161 @@
+pipeline {
+  agent none
+    stages{
+        stage('Install requirements'){
+            agent{
+                docker{
+	            image 'python:3.7'
+		    //image 'cimg/base:stable'
+// 		    args '-u root'
+                }
+            }
+            steps{
+                withEnv(["HOME=${env.WORKSPACE}"]){
+                    dir("jenkins") {
+			sh 'python -m pip install --upgrade pip --user'
+			sh 'python -m pip uninstall -r requirements.txt --yes'    
+			sh 'python -m pip install -r requirements.txt'
+		}
+                                    sh 'pip install pymongo==3.7.2'
+			            sh 'pip install coverage'
+			            sh 'python manage.py makemigrations'
+			            sh 'python manage.py migrate'
+		            
+                    sh 'python -m pip install django==2.1.15'
+			
+// 		    sh '''
+//                     	curl https://cli-assets.heroku.com/install.sh | sh;
+//                     	docker login --username=yakirov@ac.sce.ac.il --password=$(heroku auth:token) registry.heroku.com
+//                     	heroku container:push web --app estudy1
+//                     	heroku container:release web --app estudy1
+//                 	'''	
+                }
+            }
+        }       
+	       
+        stage('Compile'){
+            agent{
+                docker{
+                    image 'python:3.7'
+                }
+            }
+            steps{
+                withEnv(["HOME=${env.WORKSPACE}"]){
+			 sh 'python -m compileall TEAM_15_ESTUDY//'
+                    	 sh 'pip install django_jenkins'
+                }
+            }
+        }
+        stage('Run Unit Tests'){
+            agent{
+                docker{
+                    image 'python:3.7'
+                }
+            }
+            steps{
+		         withEnv(["HOME=${env.WORKSPACE}"]){
+		            	    sh 'pip install django-environ'
+			            sh 'python -m coverage run -a manage.py test --tag=unit-test'
+                    }
+		        
+            }
+         }
+	    stage('Run Integration Tests') {
+	        agent{
+                docker{
+                    image 'python:3.7'
+                }
+            }
+            steps {
+	  	        withEnv(["HOME=${env.WORKSPACE}"]){
+			            	sh 'pip install django-environ'
+					sh 'pip install imagekitio'
+		     	 	        sh "python -m coverage run -a manage.py test --tag=integration-test"
+		    	        
+		        }
+	        }
+        }
+
+	    stage('Coverage Report'){
+            agent{
+                    docker{
+                        image 'python:3.7'
+                    }
+                }
+            steps {
+		        withEnv(["HOME=${env.WORKSPACE}"]){
+			        	sh 'pip install django-environ'
+				        sh 'python -m coverage report --ignore-errors'
+		    	    	     
+		        }
+	        }
+	    }
+	    stage('Metric 1 - pylint python code convention') {
+		    agent{
+                docker{
+                    image 'python:3.7'
+                }
+           	}
+		    steps {
+			    withEnv(["HOME=${env.WORKSPACE}"]){
+				   	    sh 'pip install django-environ'
+					    sh 'pip install black'
+					    sh 'pip install pylint'
+					    sh 'python -m black Estudy_Project accounts DetailsAccount HomePage category YouTube forum star_ratings gridfs_storage'
+					    sh 'python -m pylint --exit-zero Estudy_Project accounts category DetailsAccount HomePage forum YouTube star_ratings gridfs_storage --load-plugins=pylint_django'
+// 					    sh 'python -m pylint --exit-zero Estudy_Project'
+					
+				}
+			}
+		}
+	    stage('Metric 2- Cyclomatic Complexity') {
+		    agent{
+			docker{
+			    image 'python:3.7'
+			}
+           	}
+		    steps {
+			    withEnv(["HOME=${env.WORKSPACE}"]) {
+				    	   sh 'pip install django-environ'
+					   sh 'python -m radon cc -s . -a'
+				    				
+			    }
+		    }
+	    }
+	    stage('Metric 3- bandit python code') {
+		    agent{
+			docker{
+			    image 'python:3.7'
+			}
+           	}
+		    steps {
+			    withEnv(["HOME=${env.WORKSPACE}"]) {
+				    	   sh 'pip install django-environ'
+				           sh 'pip install bandit'
+					   sh 'python -m bandit -r --exit-zero .'
+				    				
+			    }
+		    }
+	    }
+	    stage('Deploy to Heroku'){
+		    agent{
+			docker{
+			    image 'cimg/base:stable'
+			    args '-u root'
+			}
+		    }
+		    steps{		
+			     sh '''
+                    		curl https://cli-assets.heroku.com/install.sh | sh;
+                   		heroku container:login
+				heroku container:push web --app estudy-sce
+				heroku container:release web --app estudy-sce
+				'''	
+		    }   
+            
+        	}      
+
+    }
+}
+
+

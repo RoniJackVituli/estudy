@@ -1,0 +1,98 @@
+{% extends 'category.html' %}
+{% load static %}
+
+{% block links_save %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200&family=Varela+Round&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block style_save %}
+
+<style>
+  h1{
+    font-family: 'Assistant', sans-serif;
+    font-family: 'Varela Round', sans-serif;
+  }
+</style>
+
+{% endblock %}
+
+
+{% block Save_Up %}
+<h1>איפה תרצה לשמור</h1>
+{% endblock %}
+
+
+{% block Save_down %}
+{% if form.errors %}
+<div class="alert alert-danger" role="alert">
+  {{form.kind_of.errors}}
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block buttons %}
+  <button type="submit" class="btn btn-info">Search</button>
+  {% if user.is_lecturer and user.permissions or user.is_superuser%}
+      <button type="submit" class="btn btn-success"><a style="color: white; text-decoration: none;" href="{% url 'YouTube:create-course' video_index %}">Create Folder</a></button>
+  {% endif %}
+{% endblock %}
+
+
+{% block createFolder %}
+{% if folder %}
+<form action="{% url 'YouTube:create-course' video_index %}" method="post">
+  <div class="filters">
+    {% csrf_token %}
+    <div class="check">
+      <label for="">שם הקורס</label>
+      <br>
+      {{folder.name_course}}
+      <br>
+      <label for="">בחר מחלקה</label>
+      <br>
+      {{folder.department}}
+      <br>
+      <label for="">בחר שנה</label>
+      <br>
+      {{folder.year}}
+      <br>
+      <label for="">בחר סמסטר</label>
+      <br>
+      {{folder.semester}}
+      <br>
+      <label for="">סוג חומר</label>
+      <br>
+      {{folder.kind_of}}
+      <br>
+    </div>
+    <button type="submit" class="btn btn-dark">Create</button>
+  </div>
+</form>
+{% endif %}
+{% endblock createFolder %}
+
+{% block all_coursesYo %}
+  {% if all_courses %}
+  <div class="row">
+    {% for course in all_courses %}
+    <div class="col-md-4">
+      <br>
+      <div class="card">
+            <img class="card-img-top img-fluid" src="{% static 'images/folder.png' %}" alt="">
+            <div class="card-body">
+              <h4 class="card-title text-center"> <a class="Course" href="{% url 'YouTube:yotube-video' course.id user.id video_index %}"><b>{{course.name_course}}</b></a></h4>
+              <h5 class="card-title"></h5>  
+            </div>
+            <div class="col text-center">   
+            </div>
+            <br>
+          </div>
+        </div>
+        {% endfor %}
+        <hr> 
+      </div>
+      {% endif %}
+{% endblock  %}

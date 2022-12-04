@@ -1,0 +1,112 @@
+{% extends 'fourm.html' %}
+
+{% block style %}
+<style>
+  .card {
+    margin-top: 50px;
+    margin-left: 100px;
+    margin-right: 100px;
+    margin-bottom: 0px;
+  }
+  .card-body {
+    flex: 1 1 auto;
+    padding: 1rem 1rem;
+    margin: 0px;
+    text-align: center;
+  }
+  {% comment %} .ml-1 {
+    margin-left: -7.75rem!important;
+  } {% endcomment %}
+  .container {
+    width: 573px;
+    height: flex;
+    overflow: hidden;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: height 0.2s ease;
+    box-shadow: 0 12px 28px rgb(0 0 0 / 12%);
+}
+textarea.form-control {
+  min-height: calc(-0.5em + (5.75rem + -1px));
+  margin-top: 50px;
+}
+</style>
+{% endblock style %}
+
+{% block content %}
+<h1 style="text-align:center;">{{hw.nameFile}}</h1>
+
+<div class="card">
+  <div class="card-body">
+    <iframe src="{{hw.file.url}}" width="70%" height="750px"></iframe>
+    <h4 class="card-title text-center"> <a class="HomeWork" href="{{hw.file.url}}"><b>{{hw.nameFile}}</b></a></h4>
+    <h5 class="card-title"></h5>
+  </div>
+</div>
+<h1 style="text-align:center;">תגובה</h1>
+<div class="col-md-4" style="
+flex: 0 0 auto;
+width: auto;">
+  <div class="container mt-5">
+    <div class="d-flex justify-content-center row">
+      <div class="col-md-8">
+        <div class="d-flex flex-column comment-section">
+          <div class="bg-light p-2">
+          <form action="" method="post">
+              {% csrf_token %}
+              <div class="d-flex flex-row align-items-start">
+                <img class="rounded-circle" src="{{request.user.imag_profile.url}}" style="width: 30px;height: 30px;border-radius: 50%; object-fit: cover">
+                <span class="date text-black-50" style="text-align: center;margin-left: 30px;"> {{request.user.username}} {{form_comment.message}} </span>
+                {% comment %} {{form_comment.message}} {% endcomment %}
+              </div>
+              <div class="mt-2 text-right">
+                <button class="btn btn-primary btn-sm shadow-none" style="width: auto;" type="submit">Post comment</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" style="margin-left: 150px;">
+  {% for comment in comments %}   
+  <div class="col-md-4" style="flex: 0 0 auto; width: auto;">
+    <div class="container mt-5">
+      <div class="d-flex justify-content-center row">
+        <div class="col-md-8">
+          <div class="d-flex flex-column comment-section">
+            <div class="bg-white p-2">
+              <div class="d-flex flex-row user-info"><img class="rounded-circle" src="{{comment.user.imag_profile.url}}" style="width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                object-fit: cover;">
+                <div class="d-flex flex-column justify-content-start ml-2">
+                  <span class="d-block font-weight-bold name">{{comment.user.first_name}} {{comment.user.last_name}}</span>
+                  <span class="date text-black-50">Shared publicly - {{comment.date}}</span>
+                </div>
+              </div>           
+            </div>
+            <p class="comment-text">{{comment.message|linebreaks}}</p>
+          </div>
+          <div class="d-flex flex-row fs-12">
+            <div class="like p-2 cursor"><i class="fa fa-thumbs-o-up"></i><span class="ml-1">Like</span></div>
+            <div class="like p-2 cursor">
+              {% if comment.user == user or user.is_superuser %}
+              <a href="{% url 'Category:delete-co' comment.id hw.id %}" class="ml-1" style="text-decoration: none;color: inherit;" >
+                <i class="fa fa-commenting-o"></i>
+                <span class="ml-1">Delete</span>
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ </div>
+ {% endfor %}
+</div>
+  
+
+{% endblock content %}

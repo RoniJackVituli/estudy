@@ -1,0 +1,306 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load ratings %}
+{% block links %}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+  <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
+  <script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
+{% endblock  %}
+
+{% block style %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200&family=Varela+Round&display=swap');
+    .filters{
+      text-align: center;
+    }
+
+    .myDiv{
+      columns:50px 4;
+      text-align: center;
+    }
+
+    .card-img-top {
+
+      width: 20%;
+      margin-right: auto;
+      margin-left: auto;
+      display: block;
+  }
+
+  .row {
+    padding-top: 0%;
+  }
+
+
+  .card{
+    position: relative;
+    display: contents;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #f0f8ff;
+    background-clip: border-box;
+    border: 1px solid rgb(240 248 255);
+    border-radius: 0.25rem;
+  }
+
+  .Course{
+    text-decoration: none;
+    font-family: 'Assistant', sans-serif;
+  }
+  .box {
+
+      padding-top: 2%;
+      position: static;
+      left: 50%;
+  }
+  .box select {
+    background-color: #0563af;
+    color: white;
+    padding: 12px;
+    width: 250px;
+    border: none;
+    font-size: 20px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    -webkit-appearance: button;
+    appearance: button;
+    outline: none;
+  }
+
+  .box::before {
+    content: "\f13a";
+    font-family: FontAwesome;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20%;
+    height: 100%;
+    text-align: center;
+    font-size: 28px;
+    line-height: 45px;
+    color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+  }
+  label{
+    font-size: 41px;
+    font-family: 'Assistant', sans-serif;
+    font-family: 'Varela Round', sans-serif;
+  }
+
+  .alert{
+    text-align: center;
+  }
+  h1{
+    text-align: center;
+  }
+  h4{
+    margin-right: 54%;
+  }
+
+  .filters{
+    text-align: center;
+  }
+
+  .myA{
+    text-decoration: none !important;
+    color: white;
+  }
+
+  .col{
+    max-width: 50%;
+  }
+
+:root {
+  --select-border: #777;
+  --select-focus: blue;
+  --select-arrow: var(--select-border);
+}
+
+select {
+  // A reset of styles, including removing the default dropdown arrow
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 0 1em 0 0;
+  margin: 0;
+  width: 100%;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: inherit;
+  line-height: inherit;
+
+  // Stack above custom arrow
+  z-index: 1;
+
+  // Remove dropdown arrow in IE10 & IE11
+  // @link https://www.filamentgroup.com/lab/select-css.html
+  &::-ms-expand {
+    display: none;
+  }
+
+  // Remove focus outline, will add on alternate element
+  outline: none;
+}
+
+.select {
+  display: grid;
+  margin: auto;
+  margin-top: 20px;
+  grid-template-areas: "select";
+  align-items: center;
+  position: relative;
+  max-width: 22ch
+
+  select,
+  &::after {
+    grid-area: select;
+  }
+
+  min-width: 15ch;
+  max-width: 20ch;
+
+  border: 1px solid var(--select-border);
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
+
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1.1;
+
+  // Optional styles
+  // remove for transparency
+  background-color: #fff;
+  background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+
+  // Custom arrow
+  &:not(.select--multiple)::after {
+    content: "";
+    justify-self: end;
+    width: 0.8em;
+    height: 0.5em;
+    background-color: var(--select-arrow);
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+  }
+}
+
+// Interim solution until :focus-within has better support
+select:focus + .focus {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  border: 2px solid var(--select-focus);
+  border-radius: inherit;
+}
+
+select[multiple] {
+  padding-right: 0;
+
+  /*
+   * Safari will not reveal an option
+   * unless the select height has room to
+   * show all of it
+   * Firefox and Chrome allow showing
+   * a partial option
+   */
+  height: 6rem;
+
+  option {
+    white-space: normal;
+
+
+    // Only affects Chrome
+    outline-color: var(--select-focus);
+  }
+}
+
+.select--disabled {
+  cursor: not-allowed;
+  background-color: #eee;
+  background-image: linear-gradient(to top, #ddd, #eee 33%);
+}
+
+label {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+option{
+  direction: rtl;
+}
+
+
+
+</style>
+
+{% endblock style %}
+
+{% block content %}
+
+<h1>{{course.name_course}}</h1>
+
+
+{% if user.is_authenticated %}
+  {% if user.permissions %}
+  <div class="filters">
+    <button type="button" class="btn btn-dark"><a style="color:white; text-decoration: none;" href="{% url 'Category:u-f' course.id  user.id%}">Upload FILE</a></button>
+  </div>
+  {% endif %}
+{% endif %}
+<hr>
+{% if homeworks %}
+<div class="row">
+  {% for hw in homeworks %}
+  <div class="col-md-4">
+    <br>
+    <div class="card">
+      <div class="card-body">
+        <iframe src="{{hw.file.url}}" width="50%" height="250px"></iframe>
+        <h4 class="card-title text-center"> <a class="HomeWork" href="{{hw.file.url}}"><b>{{hw.nameFile}}</b></a></h4>
+        <h5 class="card-title"></h5>
+      </div>
+      <div class="col text-center">
+        {% ratings hw %}
+         {% if user.id == hw.user.id or user.is_superuser%}
+         <br>
+         <button type="button" class="btn btn-danger"><a style="color:white; text-decoration: none;" href="{% url 'Category:delete-file' course.id hw.id%}">Delete File</a></button>
+         <button type="button" class="btn btn-dark"><a style="color:white; text-decoration: none;" href="{% url 'Category:forum-file' hw.id%}">תגובה על המחברת</a></button>
+         {% else %}
+         <br>
+         <button type="button" class="btn btn-dark"><a style="color:white; text-decoration: none;" href="{% url 'Category:forum-file' hw.id%}">תגובה על המחברת</a></button>
+         {% endif %}
+      </div>
+        <br>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+<hr>
+
+<div class="filters">
+{% if user.is_superuser or user.is_lecturer and user.permissions %}
+    <button type="button" class="btn btn-danger"><a class="myA" href="{% url 'Category:delete-course' course.id %}">Delete Folder</a></button>
+{% endif %}
+    <button type="button" class="btn btn-danger"><a class="myA" href="{% url 'Category:cat' user.id %}">Back</a></button>
+</div>
+<div class="filters">
+  <form action="" method="PUT">
+      <div class="select">
+      {% csrf_token %}
+      <select id="standard-select" name='selecting'>
+        <option value="1">לפי דירוג</option>
+        <option value="2">לפי שם</option>
+      </select>
+      </div>
+      <button type="submit" class="btn btn-info">מיון</button>
+    </form>
+</div>
+
+{% endblock content %}

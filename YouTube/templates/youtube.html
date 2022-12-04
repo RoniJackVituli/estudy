@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block links %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+{% endblock links %}
+
+{% block style %}
+<style>
+  :root {
+    --surface-color: #f8f9fa;
+    --curve: 40;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: "Noto Sans JP", sans-serif;
+    background-color: #f8f9fa;
+  }
+  
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 4rem 5vw;
+    padding: 0;
+    list-style-type: none;
+  }
+  
+  .card {
+    position: relative;
+    display: block;
+    height: 360px;
+    width: 480px;
+    border-radius: calc(var(--curve) * 1px);
+    overflow: hidden;
+    text-decoration: none;
+  }
+  
+  .card__image {
+    width: 480px;
+    height: 360px;
+  }
+  
+  .card__overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    border-radius: calc(var(--curve) * 1px);
+    background-color: var(--surface-color);
+    transform: translateY(100%);
+    transition: 0.2s ease-in-out;
+  }
+  
+  .card:hover .card__overlay {
+    transform: translateY(0);
+  }
+  
+  .card__header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 2em;
+    padding: 2em;
+    border-radius: calc(var(--curve) * 1px) 0 0 0;
+    background-color: var(--surface-color);
+    transform: translateY(-100%);
+    transition: 0.2s ease-in-out;
+  }
+  
+  .card__arc {
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    z-index: 1;
+  }
+  
+  .card__arc path {
+    fill: var(--surface-color);
+    d: path("M 40 80 c 22 0 40 -22 40 -40 v 40 Z");
+  }
+  
+  .card:hover .card__header {
+    transform: translateY(0);
+  }
+  
+  .card__thumb {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+  
+  .card__title {
+    font-size: 1em;
+    margin: 0 0 0.3em;
+    color: black;
+  }
+  
+  .card__tagline {
+    display: block;
+    margin: 1em 0;
+    font-family: "MockFlowFont";
+    font-size: 0.8em;
+    color: black;
+  }
+  
+  .card__status {
+    font-size: 0.8em;
+    color: black;
+  }
+  
+  .card__description {
+    padding: 0 2em 2em;
+    margin: 0;
+    color: black;
+    font-family: "MockFlowFont";
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+  
+  input[type=text] {
+    width: 130px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+  }
+  
+  /* When the input field gets focus, change its width to 100% */
+  input[type=text]:focus {
+    width: 100%;
+  }
+  .headerPage{
+    text-align: center;
+    background: linear-gradient(135deg, #9ed5dc, #ffffff);
+  }
+  .card__YE{
+    width: 600px;
+    height: 327px;
+    margin-right: 30px;
+  }
+
+</style>
+
+{% endblock style %}
+
+
+
+{% block content %}
+  <div class="headerPage">
+      <hr>
+      <img src="{% static 'images/YE.png' %}" class="card__YE" alt="NoFound" />
+      <form action="" method="post">
+        {% csrf_token %}
+        <div class="input-group" style="justify-content: center">
+          <div class="form-outline">
+            <input id="search-input" type="search" id="form1" class="form-control" name="search" />
+            <label class="form-label" for="form1"><b>חיפוש סרטונים</b></label>
+            {% if Empty %}
+            <div class="alert alert-danger" role="alert">
+              {{Empty}}
+            </div>
+            {% endif %}
+          </div>
+          <button id="search-button" type="submit" class="btn btn-primary" style= "height: 39px;">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </form>
+      <hr>
+  </div>
+<div class="row" style="justify-content: center">
+  {% for video in videos %}
+<div class="col-md-4" style="
+flex: 0 0 auto;
+width: auto;">
+      <ul class="cards">
+        <li>
+          <a href="https://www.youtube.com/watch?v={{video.IdVideo}}" class="card">
+            <img src="{{video.thumbnails}}" class="card__image" alt="" />
+            <div class="card__overlay">
+              <div class="card__header">
+                <svg class="card__arc" xmlns=""><path /></svg>                     
+                <img class="card__thumb" src="{{video.profile}}" alt="" />
+                <div class="card__header-text">
+                  <h3 class="card__title"><b>{{video.title}}</b></h3>            
+                </div>
+              </div>
+              <p class="card__description">{{video.description}}</p>
+            </div>
+          </a>  
+          {% if user.is_lecturer or user.is_superuser %}
+            <button type="button" class="btn btn-info" style="margin-left: 188px; margin-top: 5px;"><a href="{% url 'YouTube:save-video' video.index %}" style="text-decoration: none; color:white;">Save</a></button>    
+          {% endif %}
+        </li>  
+      </ul>
+</div>
+{% endfor %}
+</div>
+
+{% block ratings %}
+
+{% endblock ratings %}
+
+
+{% endblock content %}
